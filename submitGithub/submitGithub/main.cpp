@@ -422,7 +422,7 @@ public:
 
 		if (Stack2.size() <= 0)//
 		{
-			while (!Stack1.empty())
+			while (!Stack1.empty()) 
 			{
 				Stack2.push(Stack1.top());
 				Stack1.pop();
@@ -457,7 +457,168 @@ void test05()
 		printf("%d", s.mypop());
 	}
 }
-/*===========================class 4 题目三====================================*/
+/*===========================class 4 ====================================*/
+//题目三:转圈打印矩阵
+void printEdge(int **arr,int tR,int tC,int dR,int dC)
+{
+	if (tR==dR)//左上角的行数等于右下角的行数
+	{
+		for (int i = tC; i <=dC; i++)
+		{
+			printf("%d + ", arr[tR][i]);
+		}
+	}
+	else if (tC==dC)
+	{
+		for (int i = tR; i <= dR; i++)
+		{
+			printf("+ %d ", arr[i][tR]);
+		}
+	}
+	else
+	{
+		int curR = tR;
+		int curC = tC;
+		while (curC!=dC)
+		{
+			printf("+ %d", arr[tR][curC]);
+			curR++;
+		}
+		while (curR != dR)
+		{
+			printf("+ %d", arr[curR][dC]);
+			curR++;
+		}
+		while (curC != tC)
+		{
+			printf("+ %d", arr[dR][curC]);
+			curC--;
+		}
+		while (curR != tR)
+		{
+			printf("+ %d", arr[curR][tC]);
+			curR--;
+		}
+	}
+}
+
+void spirlOrderPrint(int **arr,int R,int L )
+{
+	int tR = 0;
+	int tC = 0;
+	int dR = R - 1;
+	int dC = L - 1;
+	while (tR<=dR &&tC<=dC)
+	{
+		printEdge(arr, tR, tC, dR, dC);
+	}
+}
+//矩阵旋转90度
+void rotattEdge(int **arr, int tR, int tC, int dR,int dC)
+{
+	int times = dC - tC;
+	int tmp = 0;
+	for (int i=0;i!=times;i++)
+	{
+		tmp = arr[tR][tC + i];
+		arr[tR][tC + 1] = arr[dR - i][tC];
+		arr[dR - i][tC] = arr[dR][dC-i];
+		arr[dR][dC-1] = arr[tR+i][dC];
+		arr[tR+i][dC] = tmp;
+
+	}
+}
+
+void rotate(int **arr,int R ,int L)
+{
+	int tR = 0;
+	int tC = 0;
+	int dR = R - 1;
+	int dC = L - 1;
+	while (tR<dR)
+	{
+		rotattEdge(arr,tR++,tC++,dR--,dC--);
+	}
+}
+
+//题目七 【题目】 分别实现反转单向链表和反转双向链表的函数。
+/*【要求】 如果链表长度为N，时间复杂度要求为O(N)，额外空间
+复杂度要求为O(1)*/
+
+
+
+
+
+//题目八
+/*“之”字形打印矩阵
+【题目】 给定一个矩阵matrix，按照“之”字形的方式打印这
+个矩阵，例如： 1 2 3 4 5 6 7 8 9 10 11 12
+“之”字形打印的结果为：1，2，5，9，6，3，4，7，10，11，
+8，12
+【要求】 额外空间复杂度为O(1)。*/
+void printLevel(int **arr, int tR, int tC, int dR, int dC, bool f)
+{
+	if (f)
+	{
+		while (tR!=dR+1)
+		{
+
+			printf("+ %d",arr[tR++][tC--]);
+		
+		}
+	}
+	else
+	{
+		while (dR != tR - 1)
+		{
+			printf("+ %d", arr[dR--][dC++]);
+		}
+		
+	}
+}
+void printMatrixZigZag(int **arr,int R,int L)
+{
+	int tR = 0;
+	int tC = 0;
+	int dR = 0;
+	int dC = 0;
+	int endR = R - 1;
+	int endC = L - 1;
+	bool fromup = false;
+
+	while (tR!=endR+1)
+	{
+		printLevel(arr,tR,tC,dR,dC,fromup);
+		tR = tC == endC ? tR + 1:tR;
+		tC = tC == endC ? tC : tC+1;
+		dR = dR == endR ? dR :dR+1;
+		dC = dR == endR ? dC + 1 : dC;
+		fromup = !fromup;
+	}
+}
+//题目九
+/*在行列都排好序的矩阵中找数
+【题目】 给定一个有N*M的整型矩阵matrix和一个整数K，
+matrix的每一行和每一 列都是排好序的。实现一个函数，判断K
+是否在matrix中。 例如： 0 1 2 5 2 3 4 7 4
+4 4 8 5 7 7 9 如果K为7，返回true；如果K为6，返
+回false。
+【要求】 时间复杂度为O(N+M)，额外空间复杂度为O(1)。*/
+
+
+//题目十
+/*打印两个有序链表的公共部分
+【题目】 给定两个有序链表的头指针head1和head2，打印两个
+链表的公共部分。*/
+
+//题目十一
+/*判断一个链表是否为回文结构
+【题目】 给定一个链表的头节点head，请判断该链表是否为回
+文结构。 例如： 1->2->1，返回true。 1->2->2->1，返回true。
+15->6->15，返回true。 1->2->3，返回false。
+进阶： 如果链表长度为N，时间复杂度达到O(N)，额外空间复杂
+度达到 。*/
+
 
 int main()
 {
