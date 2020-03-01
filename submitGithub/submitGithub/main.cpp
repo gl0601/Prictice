@@ -5,6 +5,7 @@ void showArr(const int *arr, int n);
 int FindMax(int max, int num);
 int FindMin(int min, int num);
 
+
 template<typename T>
 void mySwap(T *arr, int i, int j)
 {
@@ -618,24 +619,214 @@ matrix的每一行和每一 列都是排好序的。实现一个函数，判断K
 15->6->15，返回true。 1->2->3，返回false。
 进阶： 如果链表长度为N，时间复杂度达到O(N)，额外空间复杂
 度达到 。*/
+class Node
+{
+public:
+	int date;
+	Node *next;
+};
+void insertNodeHead(Node *&L, int arr[], int len)//第一个插入点是末节点 逆序
+{
+	Node *s;
+	L = new Node();
+	L->next = NULL;
+	for (int i = 0; i < len; i++)
+	{
+		s = new Node();
+		s->date = arr[i];
+		s->next = L->next;
+		L->next = s;
+	}
+
+}
+void ShowList(Node *L)
+
+{
+
+	Node * p = L->next;
+
+	while (p != NULL)
+
+	{
+		printf(" %d ", p->date);
+		p = p->next;
+	}
+	printf("\n");
+
+}
+
+void deleteList(Node *&L)
+{
+	Node *pre = L;
+	Node *p = L->next;
+	
+	while (p != NULL)
+	{
+		delete pre;
+		pre = p;
+		p = p->next;
+
+	}
+	delete pre;
+}
+//使用O(N)辅助空间, 对应基础版本．
+bool isPalindromel(Node *head)
+{
+	//Node *cur = new Node();
+	Node *cur = head->next;
+	Node *p = head->next;
+	
+	std::stack<int> node_value;
+	while (cur!=NULL)//将数据压栈
+	{
+		node_value.push(cur->date);
+		cur = cur->next;
+	}
+
+	while (p !=NULL)
+	{
+
+		if (node_value.top()!= p->date)
+		{
+
+			return false;
+		}
+		else
+		{
+			p = p->next;
+			node_value.pop();
+		}
+		
+	}
+	return true;
+
+}
+//使用O(N/2)辅助空间, 对应基础版本．
+bool isPalindrome2(Node* head)
+{
+	if (head==nullptr ||head->next==nullptr)
+	{
+		return true;
+	}
+	std::stack<int> my_node_value;
+	Node *slowNode = head;
+	Node *fastNode = head;
+	Node *p = head->next;
+	while (fastNode->next!=nullptr && fastNode->next->next!=nullptr)
+	{
+		slowNode = slowNode->next;
+		fastNode = fastNode->next->next;
+	}
+	printf("%d\n",slowNode->date);
+	while (slowNode!=nullptr)
+	{
+		my_node_value.push(slowNode->date);
+		slowNode = slowNode->next;
+	}
+
+	while (!my_node_value.empty())
+	{
+		if (p->date != my_node_value.top())
+		{
+			return false;
+			break;
+		}
+		else
+		{
+			p = p->next;
+			my_node_value.pop();
+		}
+	}
+	return true;
+
+}
+
+//void printList(Node *head)
+//{
+//	注意haead是一个指针不存数据
+//	while (head!=NULL)
+//	{
+//		printf("%d\n",head->date);
+//		head = head->next;
+//	}
+//}
+
+void InitList(Node *&L)
+{
+
+	L = new Node();
+	L->next = NULL;
+}
+//need O（1）extra space
+bool isPalindrome3(Node* head) {
+	if (head == nullptr || head->next == nullptr) {
+		return true;
+	}
+	Node* n1 = head;    // slow pointer
+	Node* n2 = head;    // fast pointer
+	while (n2->next != nullptr && n2->next->next != nullptr) {
+		n1 = n1->next;
+		n2 = n2->next->next;
+	}
+	n2 = n1->next;    // n2 now is the first node in the second list
+	n1->next = nullptr;
+	Node* n3 = nullptr;    // A ListNode to store the last node in the second list
+	while (n2 != nullptr) {
+		n3 = n2->next;
+		n2->next = n1;
+		n1 = n2;
+		n2 = n3;
+	}
+	n3 = n1;    // here n1 is the last node in the second list, we need to store the last node to reconver
+	n2 = head;  // compare the first and the second list
+	while (n1 != nullptr && n2 != nullptr) {
+		if (n1->date != n2->date) {
+			return false;
+			break;
+		}
+		else {
+			n1 = n1->next;
+			n2 = n2->next;
+		}
+	}
+	n1 = n3->next;    // here we recover the second list to the origin order
+	n3->next = nullptr;   // the origin last node next poiter is nullptr
+	while (n1 != nullptr) {
+		n2 = n1->next;
+		n1->next = n3;
+		n3 = n1;
+		n1 = n2;
+	}
+	return true;
+
+}
+
+/*题目十二*/
 
 
+
+void testisPalindromel()
+{
+	Node *a;
+	InitList(a);
+
+	int arr[4] = {1,2,2,1};
+	insertNodeHead(a,arr,4);
+	//printList(a);
+	ShowList(a);
+
+	if (isPalindrome2(a))
+		printf("yes");
+	else
+	{
+		printf("no");
+	}
+	deleteList(a);
+}
 int main()
 {
-	//Array_To_Stack<int> arr(3);
+	testisPalindromel();
 
-	//arr.push(1);
-	//arr.push(2);
-	//arr.push(3);
-
-	////int arr[10] = {0,1,3,5,5,8,7,9,18};
-
-	//printf("%d",arr.sizeofarr());
-	printf("ceshi");
-	printf("1");
-	printf("3");
-	printf("4");
-	test05();
 	return 0;
 }
 void showArr(const int *arr, int n)
