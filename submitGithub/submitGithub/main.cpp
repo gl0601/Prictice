@@ -762,6 +762,7 @@ bool isPalindrome3(Node* head) {
 	if (head == nullptr || head->next == nullptr) {
 		return true;
 	}
+	//奇数的时候来到中点，偶数的时候来到中点的前一个
 	Node* n1 = head;    // slow pointer
 	Node* n2 = head;    // fast pointer
 	while (n2->next != nullptr && n2->next->next != nullptr) {
@@ -771,11 +772,12 @@ bool isPalindrome3(Node* head) {
 	n2 = n1->next;    // n2 now is the first node in the second list
 	n1->next = nullptr;
 	Node* n3 = nullptr;    // A ListNode to store the last node in the second list
+	//后半部分逆序
 	while (n2 != nullptr) {
 		n3 = n2->next;
 		n2->next = n1;
-		n1 = n2;
-		n2 = n3;
+		n1 = n2;//n1 move
+		n2 = n3;//n2 move
 	}
 	n3 = n1;    // here n1 is the last node in the second list, we need to store the last node to reconver
 	n2 = head;  // compare the first and the second list
@@ -791,7 +793,8 @@ bool isPalindrome3(Node* head) {
 	}
 	n1 = n3->next;    // here we recover the second list to the origin order
 	n3->next = nullptr;   // the origin last node next poiter is nullptr
-	while (n1 != nullptr) {
+	//恢复现场
+	while (n1 != nullptr) {//recover list
 		n2 = n1->next;
 		n1->next = n3;
 		n3 = n1;
@@ -801,10 +804,203 @@ bool isPalindrome3(Node* head) {
 
 }
 
-/*题目十二*/
+/*题目十二将单向链表按某值划分成左边小、中间相等、右边大的形式
+【题目】 给定一个单向链表的头节点head，节点的值类型是整型，再给定一个
+整 数pivot。实现一个调整链表的函数，将链表调整为左部分都是值小于 pivot
+的节点，中间部分都是值等于pivot的节点，右部分都是值大于 pivot的节点。
+除这个要求外，对调整后的节点顺序没有更多的要求。 例如：链表9->0->4->5-
+>1，pivot=3。 调整后链表可以是1->0->4->9->5，也可以是0->1->9->5->4。总
+之，满 足左部分都是小于3的节点，中间部分都是等于3的节点（本例中这个部
+分为空），右部分都是大于3的节点即可。对某部分内部的节点顺序不做 要求。
+进阶： 在原问题的要求之上再增加如下两个要求。
+在左、中、右三个部分的内部也做顺序要求，要求每部分里的节点从左 到右的
+顺序与原链表中节点的先后次序一致。 例如：链表9->0->4->5->1，pivot=3。
+调整后的链表是0->1->9->4->5。 在满足原问题要求的同时，左部分节点从左到
+右为0、1。在原链表中也 是先出现0，后出现1；中间部分在本例中为空，不再
+讨论；右部分节点 从左到右为9、4、5。在原链表中也是先出现9，然后出现4，
+最后出现5。
+如果链表长度为N，时间复杂度请达到O(N)，额外空间复杂度请达到O(1)。*/
+/*//用三个指针处理，这道题主要是要注意串联链表时的一些细节处理
+    public static Node listPartition(Node head, int pivot) {
+        Node sB = null;//小的指针头，即small begin
+        Node sE = null;//小的指针尾，即 small end
+        Node eB = null;//中的指针头，即 equal begin
+        Node eE = null;//中的指针尾，即emall end
+        Node bB = null;//大的指针头，即 big begin
+        Node bE = null;//大的指针尾，即 big end
+        Node next = null;//保存下一个节点
+        //进行划分
+        while (head != null) {
+            next = head.next;
+            head.next = null;
+            if (head.value < pivot) {
+                if (sB == null) {
+                    sB = head;
+                    sE = head;
+                } else {
+                    sE.next = head;
+                    sE = sE.next;
+                }
+            } else if (head.value == pivot) {
+                if (eB == null) {
+                    eB = head;
+                    eE = head;
+                } else {
+                    eE.next = head;
+                    eE = eE.next;
+                }
+            } else {
+                if (bB == null) {
+                    bB = head;
+                    bE = head;
+                } else {
+                    bE.next = head;
+                    bE = bE.next;
+                }
+            }
+            head = next;
+        }
+        //把三部分串连起来，串联的时候细节还是挺多的，
+        //串联的过程下面代码的精简程度是最学习的部分了
+        
+        //1.小的与中的串联
+        if (sB != null) {
+            sE.next = eB;
+            eE = eE == null ? sE : eE;
+        }
+        //2.中的和大的连接
+        if (eB != null) {
+            eE.next = bB;
+        }
+        return sB != null ? sB : eB != null ? eB : bB;
+    }*/
+//题目13
+/*复制含有随机指针节点的链表
+【题目】 一种特殊的链表节点类描述如下：
+public class Node { public int value; public Node next; public
+Node rand;
+public Node(int data) { this.value = data; }
+}
+Node类中的value是节点值，next指针和正常单链表中next指针的意义
+一 样，都指向下一个节点，rand指针是Node类中新增的指针，这个指
+针可 能指向链表中的任意一个节点，也可能指向null。 给定一个由
+Node节点类型组成的无环单链表的头节点head，请实现一个 函数完成
+这个链表中所有结构的复制，并返回复制的新链表的头节点。 进阶：
+不使用额外的数据结构，只用有限几个变量，且在时间复杂度为 O(N)
+内完成原问题要实现的函数。*/
 
+/*题目14 两个单链表相交的一系列问题
+【题目】 在本题中，单链表可能有环，也可能无环。给定两个
+单链表的头节点 head1和head2，这两个链表可能相交，也可能
+不相交。请实现一个函数， 如果两个链表相交，请返回相交的
+第一个节点；如果不相交，返回null 即可。 要求：如果链表1
+的长度为N，链表2的长度为M，时间复杂度请达到 O(N+M)，额外
+空间复杂度请达到O(1)。*/
 
+//class 5
+/*实现二叉树的先序、中序、后序遍历，包括递归方式和非递归
+方式*/
+class treeNode
+{
+public:
+	treeNode(int data)
+	{
+		this->value = data;
+		left = nullptr;
+		right = nullptr; 
+	}
 
+	void preOrderRecur(treeNode *head)//先序遍历 ：先打印当前节点 然后 先打印完左子树，然后在打印右子树 
+	{
+		if (head==nullptr)
+		{
+			return;
+		}
+		printf("%d + ",head->value);
+		preOrderRecur(head->left);
+		preOrderRecur(head->right);
+	}
+	void inOrderRecur(treeNode *head)//中序遍历 
+	{
+		if (head == nullptr)
+		{
+			return;
+		}
+		
+		preOrderRecur(head->left);
+		printf("%d + ", head->value);
+		preOrderRecur(head->right);
+	}
+	void posOrderRecur(treeNode *head)//中序遍历 
+	{
+		if (head == nullptr)
+		{
+			return;
+		}
+
+		preOrderRecur(head->left);
+		preOrderRecur(head->right);
+		printf("%d + ", head->value);
+	}
+
+	void preOrderUnRecur(treeNode *head)
+	{
+		
+		if (head != nullptr)
+		{
+			std::stack<int>my_stack;
+			my_stack.push(head->value);
+			while (!my_stack.empty())
+			{
+				int cur_value = my_stack.top();
+				printf("%d", cur_value);
+				my_stack.pop();
+				//有右先压右，然后压左
+				if (head->right != nullptr)
+				{
+					my_stack.push(head->right->value);
+				}
+
+				if (head->left!=nullptr)
+				{
+					my_stack.push(head->left->value);
+				}
+				
+			}
+		}
+		
+		
+	}
+	void inOrderUnRecur(treeNode *head)
+	{
+		if (head!=nullptr)
+		{
+			std::stack<treeNode*> nodeValue;
+			while (head!=nullptr || !nodeValue.empty())
+			{
+				if(head!=nullptr)
+				{ 
+					nodeValue.push(head);
+					head = head->left;
+				}
+				else
+				{
+					
+					head = nodeValue.top();
+					nodeValue.pop();
+					printf("%d", head->value);
+					head = head->right;
+				}
+			}
+		}
+	
+	}
+
+	int value;
+	treeNode *left;
+	treeNode *right;
+
+};
 void testisPalindromel()
 {
 	Node *a;
