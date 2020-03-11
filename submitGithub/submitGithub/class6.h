@@ -407,7 +407,7 @@ void testTrieNode()
 	trie.insert("liad");
 	trie.deleteStr("lia");
 	cout << trie.search("lia") << endl;
-	cout << trie.prefixNumbers("lia") << endl;
+	cout << trie.prefixNumbers("lia") << endl;//
 
 }
 
