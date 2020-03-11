@@ -1,6 +1,13 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <stack>
 #include <queue>
+#include <string>
+#include "class5.h"
+#include "class6.h"
+
+using namespace std;
+
 void showArr(const int *arr, int n);
 int FindMax(int max, int num);
 int FindMin(int min, int num);
@@ -619,12 +626,7 @@ matrix的每一行和每一 列都是排好序的。实现一个函数，判断K
 15->6->15，返回true。 1->2->3，返回false。
 进阶： 如果链表长度为N，时间复杂度达到O(N)，额外空间复杂
 度达到 。*/
-class Node
-{
-public:
-	int date;
-	Node *next;
-};
+
 void insertNodeHead(Node *&L, int arr[], int len)//第一个插入点是末节点 逆序
 {
 	Node *s;
@@ -633,7 +635,7 @@ void insertNodeHead(Node *&L, int arr[], int len)//第一个插入点是末节点 逆序
 	for (int i = 0; i < len; i++)
 	{
 		s = new Node();
-		s->date = arr[i];
+		s->value = arr[i];
 		s->next = L->next;
 		L->next = s;
 	}
@@ -648,7 +650,7 @@ void ShowList(Node *L)
 	while (p != NULL)
 
 	{
-		printf(" %d ", p->date);
+		printf(" %d ", p->value);
 		p = p->next;
 	}
 	printf("\n");
@@ -679,14 +681,14 @@ bool isPalindromel(Node *head)
 	std::stack<int> node_value;
 	while (cur!=NULL)//将数据压栈
 	{
-		node_value.push(cur->date);
+		node_value.push(cur->value);
 		cur = cur->next;
 	}
 
 	while (p !=NULL)
 	{
 
-		if (node_value.top()!= p->date)
+		if (node_value.top()!= p->value)
 		{
 
 			return false;
@@ -717,16 +719,16 @@ bool isPalindrome2(Node* head)
 		slowNode = slowNode->next;
 		fastNode = fastNode->next->next;
 	}
-	printf("%d\n",slowNode->date);
+	printf("%d\n",slowNode->value);
 	while (slowNode!=nullptr)
 	{
-		my_node_value.push(slowNode->date);
+		my_node_value.push(slowNode->value);
 		slowNode = slowNode->next;
 	}
 
 	while (!my_node_value.empty())
 	{
-		if (p->date != my_node_value.top())
+		if (p->value != my_node_value.top())
 		{
 			return false;
 			break;
@@ -746,7 +748,7 @@ bool isPalindrome2(Node* head)
 //	注意haead是一个指针不存数据
 //	while (head!=NULL)
 //	{
-//		printf("%d\n",head->date);
+//		printf("%d\n",head->value);
 //		head = head->next;
 //	}
 //}
@@ -782,7 +784,7 @@ bool isPalindrome3(Node* head) {
 	n3 = n1;    // here n1 is the last node in the second list, we need to store the last node to reconver
 	n2 = head;  // compare the first and the second list
 	while (n1 != nullptr && n2 != nullptr) {
-		if (n1->date != n2->date) {
+		if (n1->value != n2->value) {
 			return false;
 			break;
 		}
@@ -903,6 +905,13 @@ Node节点类型组成的无环单链表的头节点head，请实现一个 函数完成
 class treeNode
 {
 public:
+	treeNode()
+	{
+		value = 0;
+		left = nullptr;
+		right = nullptr;
+	}
+
 	treeNode(int data)
 	{
 		this->value = data;
@@ -995,19 +1004,113 @@ public:
 		}
 	
 	}
+	void posOrderUnRecur1(treeNode *head)
+	{
+		if (head!=nullptr)
+		{
+			std::stack<treeNode *>s1;
+			std::stack<treeNode *>s2;
+			s1.push(head);
+			while (!s1.empty())
+			{
+				head = s1.top();
+				s1.pop();
+				s2.push(head);
+				if (head->left != nullptr)
+				{
+					s1.push(head->left);
+				}
+				if (head->right != nullptr)
+				{
+					s1.push(head->right);
+				}
+			}
+			while (!s2.empty())
+			{
+				printf("%d", s2.top()->value);
+				s2.pop();
+			}
+		}
 
+	}
+
+	void posOrderUnRecur2(treeNode *head)
+	{
+		if (head!=nullptr)
+		{
+			std::stack<treeNode*>stack;
+			stack.push(head);
+			treeNode *c=nullptr;
+			while (!stack.empty())
+			{
+				c = stack.top();
+				if (c->left!=nullptr && head!=c->left && head!=c->right)
+				{
+					stack.push(c->left);
+				}
+				else if (c->right != nullptr &&  head != c->right)
+				{
+					stack.push(c->right);
+				}
+				else
+				{
+					printf("%d",stack.top()->value);
+					stack.pop();
+					head = c;
+				}
+			}
+		}
+	} 
+	   //题目二 如何直观的打印一颗二叉树
+	
 	int value;
 	treeNode *left;
 	treeNode *right;
+	treeNode *parent;
 
 };
+
+//题目二 如何直观的打印一颗二叉树
+//打印题目1中树的情况，逆时针90度观察可以获得空间概念的二叉树，^ ^表示其父节点为左上，v v表示父节点为左下，这样如果某一棵二叉树的节点都是一个值，也可以直观地观察到二叉树的形状。
+class printBinaryTree {
+public:
+	void printTree(treeNode *root)
+	{
+		std::cout << "Print Binary Tree:" << std::endl;
+		printInOrder(root, 0, "H", 17);
+		std::cout << std::endl;
+	}
+	void printInOrder(treeNode *root, int height, std::string to, int len)
+	{
+		if (root == nullptr)
+			return;
+		printInOrder(root->right, height + 1, "v", len);
+		std::string val = to + std::to_string(root->value) + to;//to_string(int value)将数值转化为字符串。返回对应的字符串
+		int lenM = val.size();
+		int lenL = (len - lenM) / 2;
+		int lenR = len - lenM - lenL;
+		val = getSpace(lenL) + val + getSpace(lenR);
+		std::cout << getSpace(height * len) + val << std::endl;
+		printInOrder(root->left, height + 1, "^", len);
+	}
+	std::string getSpace(int num)
+	{
+		std::string space = " ";
+		std::string buf;
+		for (int i = 0; i < num; i++) {
+			buf.append(space);
+		}
+		return buf;
+	}
+};
+
 void testisPalindromel()
 {
 	Node *a;
 	InitList(a);
 
-	int arr[4] = {1,2,2,1};
-	insertNodeHead(a,arr,4);
+	int arr[4] = { 1,2,2,1 };
+	insertNodeHead(a, arr, 4);
 	//printList(a);
 	ShowList(a);
 
@@ -1019,9 +1122,241 @@ void testisPalindromel()
 	}
 	deleteList(a);
 }
+
+	//题目三
+	/*在二叉树中找到一个节点的后继节点
+【题目】 现在有一种新的二叉树节点类型如下：
+public class Node { public int value; public Node left;
+public Node right; public Node parent;
+public Node(int data) { this.value = data; }
+}
+该结构比普通二叉树节点结构多了一个指向父节点的parent指针。假
+设有一 棵Node类型的节点组成的二叉树，树中每个节点的parent指针
+都正确地指向 自己的父节点，头节点的parent指向null。只给一个在
+二叉树中的某个节点 node，请实现返回node的后继节点的函数。在二
+叉树的中序遍历的序列中， node的下一个节点叫作node的后继节点。*/
+
+//如果一个节点有右节点，那么他的后继节点一定是右子树的最左节点；
+//当x无右子树，通过x的父指针找到父节点，判断x是否为父节点的左孩子，如果是则是后继节点，否则向上继续查找
+
+struct ParentNode {
+	int value;
+	ParentNode *leftChild;
+	ParentNode *rightChild;
+	ParentNode *parent;
+};
+
+class getSuccessorNode {
+public:
+	/**层序遍历，打印节点**/
+	void levelTraversal(ParentNode *root)
+	{
+		if (root == nullptr)
+			return;
+		queue<ParentNode *> qu;
+		qu.push(root);
+		while (!qu.empty())
+		{
+			root = qu.front();
+			qu.pop();
+			cout << "value is: " << root->value << " ";
+			if (root->parent != nullptr)
+				cout << "parent node is: " << root->parent->value << ". " << endl;
+			else
+				cout << "Root!" << endl;
+			if (root->leftChild)
+				qu.push(root->leftChild);
+			if (root->rightChild)
+				qu.push(root->rightChild);
+		}
+	}
+	ParentNode* getNextNode(ParentNode *node)
+	{
+		if (node == nullptr)
+			return node;
+		if (node->rightChild!=nullptr)
+		{
+			return getLeftest(node->rightChild);
+		}
+		else
+		{
+			ParentNode *parent = node->parent;
+			while (parent!=nullptr && parent->leftChild!=node)
+			{
+				node = parent;
+				parent = node->parent;
+			}
+			return parent;
+		}
+	}
+	ParentNode* getLeftest(ParentNode *node)
+	{
+		if (node == nullptr)
+			return node;
+		while (node->leftChild != nullptr)
+		{
+			node = node->leftChild;
+		}
+		return node;
+	}
+
+	/**找某个节点的前驱节点**/
+	ParentNode* getPreviousNode(ParentNode *node)
+	{
+		if (node == nullptr)
+			return nullptr;
+		ParentNode *tmp = node;
+		if (tmp->leftChild)//找到左孩子的最右节点
+		{
+			return getRightest(tmp->leftChild);
+		}
+		else
+		{
+			while (tmp->parent != nullptr)
+			{
+				if (tmp == tmp->parent->rightChild)
+					return tmp->parent;
+				else
+					tmp = tmp->parent;
+			}
+			return nullptr;
+		}
+	}
+	ParentNode* getRightest(ParentNode *node)
+	{
+		if (node == nullptr)
+			return nullptr;
+		while (node->rightChild != nullptr)
+		{
+			node = node->rightChild;
+		}
+		return node;
+	}
+
+};
+//题目4
+//介绍二叉树的序列化和反序列化
+class SerializeTree {
+public:
+	/**先序序列化**/
+	string serializeTree(treeNode *root)
+	{
+		if (root == nullptr)
+			return "$_";
+		string res = to_string(root->value) + "_";
+		res = res + serializeTree(root->left);
+		res = res + serializeTree(root->right);
+		return res;
+	}
+	treeNode* reserializeTree(string serial)
+	{
+		vector<string> res;
+		SplitString(serial, res, "_");
+		queue<string> que;
+		for (int i = 0; i < res.size(); i++)
+		{
+			que.push(res[i]);
+		}
+		return reconTree(que);
+	}
+	/**又是因为引用&符号出错，如果没有引用，每一次函数修改que,栈中会保存每个递归的
+	参数，这样递归回去的时候还是没有pop的的queue,所以会出错
+	为什么Java没事呢**/
+	treeNode* reconTree(queue<string> &que)
+	{
+		string val = que.front();
+		que.pop();
+		queue<string> ss = que;
+		if (val == "$")
+		{
+			return nullptr;
+		}
+		treeNode *root=new treeNode();
+		root->value = atoi(val.c_str());
+		root->left = reconTree(que);
+		root->right = reconTree(que);
+		return root;
+	}
+	/**层序序列化**/
+	string levelSerial(treeNode *root)
+	{
+		if (root == nullptr)
+			return "$_";
+		queue<treeNode*> que;
+		treeNode *tmp;
+		que.push(root);
+		string res = "";
+		while (!que.empty())
+		{
+			tmp = que.front();
+			que.pop();
+			if (tmp != nullptr)
+			{
+				res = res + to_string(tmp->value) + "_";
+				que.push(tmp->left);
+				que.push(tmp->right);
+			}
+			else
+			{
+				res = res + "$_";
+			}
+		}
+		return res;
+	}
+	treeNode* levelReconTree(string serial)
+	{
+		vector<string> res;
+		SplitString(serial, res, "_");
+		queue<treeNode*> que;
+		treeNode *root = generateNode(res[0]);
+		if (root != nullptr)
+			que.push(root);
+		treeNode *node = nullptr;
+		int i = 1;
+		while (!que.empty())
+		{
+			node = que.front();
+			que.pop();
+			node->left = generateNode(res[i++]);
+			node->right = generateNode(res[i++]);
+			if (node->left != nullptr)
+				que.push(node->left);
+			if (node->right != nullptr)
+				que.push(node->right);
+		}
+		return root;
+	}
+	treeNode* generateNode(string s)
+	{
+		if (s == "$")
+			return nullptr;
+		treeNode *root = new treeNode;
+		root->value = atoi(s.c_str());
+		root->left = nullptr;
+		root->right = nullptr;
+		return root;
+	}
+
+	void SplitString(const string& s, vector<string>& v, const string& c)
+	{
+		string::size_type pos1, pos2;
+		pos2 = s.find(c);
+		pos1 = 0;
+		while (string::npos != pos2)
+		{
+			v.push_back(s.substr(pos1, pos2 - pos1));
+
+			pos1 = pos2 + c.size();
+			pos2 = s.find(c, pos1);
+		}
+		if (pos1 != s.length())
+			v.push_back(s.substr(pos1));
+	}
+};
+
 int main()
 {
-	testisPalindromel();
+	compareStr::testcomStr();
 
 	return 0;
 }

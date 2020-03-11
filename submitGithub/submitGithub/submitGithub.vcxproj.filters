@@ -18,5 +18,19 @@
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="class5.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="class5.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="练习.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="class6.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
